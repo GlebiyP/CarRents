@@ -1,0 +1,45 @@
+﻿@model CarRents.Models.CarRent
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create new rent</h1>
+
+<h4>Car rental</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RenterID" class="control-label"></label>
+                <select asp-for="RenterID" class ="form-control" asp-items="ViewBag.RenterID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CarID" class="control-label"></label>
+                <select asp-for="CarID" class ="form-control" asp-items="ViewBag.CarID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompanyID" class="control-label"></label>
+                <select asp-for="CompanyID" class ="form-control" asp-items="ViewBag.CompanyID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="RentalDays" class="control-label"></label>
+                <input asp-for="RentalDays" class="form-control" />
+                <span asp-validation-for="RentalDays" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

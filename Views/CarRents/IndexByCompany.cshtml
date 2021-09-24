@@ -1,0 +1,60 @@
+﻿@model IEnumerable<CarRents.Models.CarRent>
+
+@{
+    ViewData["Title"] = "CarRents";
+}
+
+<h1>Car rental @ViewBag.CompanyName</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Car.Brand)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Car)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Renter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RentalDays)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Car.Brand.BrandName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Car.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Renter.RenterName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.CompanyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RentalDays)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CarRentID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CarRentID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CarRentID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="Companies" asp-action="Index">Back to List</a>
+</div>
