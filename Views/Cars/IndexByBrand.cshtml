@@ -6,9 +6,6 @@
 
 <h1>@ViewBag.BrandName cars</h1>
 
-<p>
-    @Html.ActionLink("Create new car", "CreateByBrand", new { brandId = ViewBag.BrandID })
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -29,6 +26,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
             </th>
             <th></th>
         </tr>
@@ -53,6 +53,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <img src="@("~/images/"+ item.ImagePath)" asp-append-version="true" style="width:auto; height:150px" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.CarID">Edit</a> |
