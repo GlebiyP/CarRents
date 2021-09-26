@@ -78,7 +78,7 @@ namespace CarRents.Controllers
                 string wwwRootPath = _hostEnvironment.WebRootPath;
                 string fileName = Path.GetFileNameWithoutExtension(car.ImageFile.FileName);
                 string extension = Path.GetExtension(car.ImageFile.FileName);
-                car.ImagePath = fileName = fileName + "_" + DateTime.Now.ToString("yymmss") + extension;
+                car.ImagePath = fileName = fileName + "_" + DateTime.Now.ToString("yymmssfff") + extension;
                 string path = Path.Combine(wwwRootPath + "/images/", fileName);
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
@@ -138,7 +138,7 @@ namespace CarRents.Controllers
                     string wwwRootPath = _hostEnvironment.WebRootPath;
                     string fileName = Path.GetFileNameWithoutExtension(car.ImageFile.FileName);
                     string extension = Path.GetExtension(car.ImageFile.FileName);
-                    car.ImagePath = fileName = fileName + "_" + DateTime.Now.ToString("yymmss") + extension;
+                    car.ImagePath = fileName = fileName + "_" + DateTime.Now.ToString("yymmssfff") + extension;
                     string path = Path.Combine(wwwRootPath + "/images/", fileName);
                     using (var fileStream = new FileStream(path, FileMode.Create))
                     {
