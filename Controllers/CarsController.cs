@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CarRents.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace CarRents.Controllers
 {
     public class CarsController : Controller
     {
         private readonly CarRentsContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public CarsController(CarRentsContext context)
+        public CarsController(CarRentsContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Cars
@@ -66,37 +70,27 @@ namespace CarRents.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CarID,BrandID,CarYear,Body,Model,Color,Price")] Car car)
+        public async Task<IActionResult> Create([Bind("CarID,BrandID,CarYear,Body,Model,Color,Price,ImageFile")] Car car)
         {
             if (ModelState.IsValid)
             {
+                //Save image to wwwroor/images
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string fileName = Path.GetFileNameWithoutExtension(car.ImageFile.FileName);
+                string extension = Path.GetExtension(car.ImageFile.FileName);
+                car.ImagePath = fileName = fileName + "_" + DateTime.Now.ToString("yymmss") + extension;
+                string path = Path.Combine(wwwRootPath + "/images/", fileName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    await car.ImageFile.CopyToAsync(fileStream);
+                }
+
                 _context.Add(car);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BrandID"] = new SelectList(_context.Brands, "BrandID", "BrandName", car.BrandID);
             return View(car);
-        }
-
-        public IActionResult CreateByBrand(int brandId)
-        {
-            ViewBag.BrandID = brandId;
-            ViewBag.BrandName = _context.Brands.Where(b => b.BrandID == brandId).FirstOrDefault().BrandName;
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateByBrand(int brandId, [Bind("CarID,BrandID,CarYear,Body,Model,Color,Price")] Car car)
-        {
-            car.BrandID = brandId;
-            if(ModelState.IsValid)
-            {
-                _context.Add(car);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("IndexByBrand", "Cars", new { id = brandId, name = _context.Brands.Where(b => b.BrandID == brandId).FirstOrDefault().BrandName });
-            }
-            return RedirectToAction("IndexByBrand", "Cars", new { id = brandId, name = _context.Brands.Where(b => b.BrandID == brandId).FirstOrDefault().BrandName });
         }
 
         // GET: Cars/Edit/5
@@ -121,8 +115,9 @@ namespace CarRents.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CarID,BrandID,CarYear,Body,Model,Color,Price")] Car car)
+        public async Task<IActionResult> Edit(int id, [Bind("CarID,BrandID,CarYear,Body,Model,Color,Price,ImageFile")] Car car)
         {
+            
             if (id != car.CarID)
             {
                 return NotFound();
@@ -130,8 +125,26 @@ namespace CarRents.Controllers
 
             if (ModelState.IsValid)
             {
+                //delete previous car image from the wwwroot/images
+                /*var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "images", car.ImagePath);
+                if(System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }*/
+
                 try
                 {
+                    //save new image to the wwwroot/images
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string fileName = Path.GetFileNameWithoutExtension(car.ImageFile.FileName);
+                    string extension = Path.GetExtension(car.ImageFile.FileName);
+                    car.ImagePath = fileName = fileName + "_" + DateTime.Now.ToString("yymmss") + extension;
+                    string path = Path.Combine(wwwRootPath + "/images/", fileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await car.ImageFile.CopyToAsync(fileStream);
+                    }
+
                     _context.Update(car);
                     await _context.SaveChangesAsync();
                 }
@@ -177,6 +190,15 @@ namespace CarRents.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var car = await _context.Cars.FindAsync(id);
+
+            //delete image from wwwroot/images
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "images", car.ImagePath);
+            if(System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+
+            //delete the record
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
