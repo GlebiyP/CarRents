@@ -16,7 +16,7 @@ namespace CarRents.Models
         public int CompanyID { get; set; }
 
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "The field cannot be empty!")]
+        [Required(ErrorMessage = "This field is required.")]
         public string CompanyName { get; set; }
 
         [Display(Name = "Rating")]
