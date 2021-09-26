@@ -16,11 +16,11 @@ namespace CarRents.Models
         public int BrandID { get; set; }
 
         [Display(Name = "Name")]
-        [Required(ErrorMessage = "The field cannot be empty!")]
+        [Required(ErrorMessage = "This field is required.")]
         public string BrandName { get; set; }
 
         [Display(Name = "Country")]
-        [Required(ErrorMessage = "The field cannot be empty!")]
+        [Required(ErrorMessage = "This field is required.")]
         public string Country { get; set; }
 
         public virtual ICollection<Car> Cars { get; set; }
